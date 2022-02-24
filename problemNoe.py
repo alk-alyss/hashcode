@@ -82,27 +82,41 @@ def sortProjects(projects):
     newProjects = sorted(projects, key=lambda x: (x.score, x.end), reverse=True)
     return newProjects
 
+
 def assignContributors(projects):
-	working = []
-	while True:
-		project = projects.pop()
-		if not project.getContributors(contributors):
-			break
-		working.append(project)
-	
-	return working
+    working = []
+    while True:
+        project = projects.pop()
+        if not project.getContributors(contributors):
+            break
+        working.append(project)
+
+    return working
+
 
 def completeProject(working):
-	global day, score
+    global day, score
 
-	working = sorted(working, key=lambda x: x.duration-day)
-	currentProject = working.pop()
-	day += currentProject.duration-day
-	score += max(currentProject.score - (currentProject.end - currentProject.day), 0)
-	for c in currentProject.contributors:
-		c.working = False
-	
-	return currentProject
+    working = sorted(working, key=lambda x: x.duration - day)
+    currentProject = working.pop()
+    day += currentProject.duration - day
+    score += max(currentProject.score - (currentProject.end - currentProject.day), 0)
+    for c in currentProject.contributors:
+        c.working = False
+
+    return currentProject
+
+
+def write_submission(done, filename):
+    with open(filename, "w") as file:
+        file.write(str(len(done)))
+        for project in done:
+            file.write(project.name)
+            tmp = ""
+            for contributor in project.contributors:
+                tmp += contributor.name + " "
+            file.write(tmp)
+
 
 # Main code
 day = 0
@@ -115,10 +129,12 @@ numberOfProjects = len(projects)
 projects = sortProjects(projects)
 done = []
 
-while(True):
-	working = assignContributors(projects)
-	if working == []:
-		break
-	done.append(completeProject(working))
-	if len(done) == numberOfProjects:
-		break
+while True:
+    working = assignContributors(projects)
+    if working == []:
+        break
+    done.append(completeProject(working))
+    if len(done) == numberOfProjects:
+        break
+
+write_submission(done, "a_submission.txt")
