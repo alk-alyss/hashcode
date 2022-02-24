@@ -7,6 +7,18 @@ class Project:
         self.roles = roles
         self.contributors = []
 
+    def getContributors(self, contributors):
+        for role in self.roles:
+            for contributor in contributors:
+                if not contributor.working:
+                    if contributor.get_skill(role[0]) >= role[1]:
+                        self.contributors.append(contributor)
+                        contributor.working = True
+                        break
+            else:
+                return False
+        return True
+
     def __str__(self):
         # return str(self.name)+" "+str(self.duration)+" "+str(self.score)+" "+str(self.end)+" "+str(self.roles)
         return "Score: " + str(self.score) + " End: " + str(self.end)
@@ -18,12 +30,10 @@ class Contributor:
         self.skills = skills  # dictionary: key=skill, value=level
         self.working = False
 
-    def check_project(self, project: Project) -> bool:
-        for i in project.roles.keys():
-            if i in self.skills.keys():
-                if self.skills[i] >= project.roles[i]:
-                    return i
-        return False
+    def get_skill(self, skill) -> bool:
+        if skill in self.skills.keys():
+            return self.skills[skill]
+        return 0
 
     def __str__(self):
         return str(self.name) + " " + str(self.skills)
