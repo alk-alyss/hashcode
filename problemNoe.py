@@ -5,6 +5,8 @@ class Project:
 		self.score = score
 		self.end = end
 		self.roles = roles
+		self.contributors = []
+
 	def __str__(self):
 		return str(self.name)+" "+str(self.duration)+" "+str(self.score)+" "+str(self.end)+" "+str(self.roles)
 
@@ -13,6 +15,14 @@ class Contributor:
 		self.name = name
 		self.skills = skills # dictionary: key=skill, value=level
 		self.working = False
+
+	def check_project(self, project: Project) -> bool:
+		for i in project.roles.keys():
+			if i in self.skills.keys():
+				if self.skills[i] >= project.roles[i]:
+					return i
+		return False
+
 	def __str__(self):
 		return str(self.name)+" "+str(self.skills)
 
