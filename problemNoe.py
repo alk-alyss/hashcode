@@ -9,4 +9,4 @@ class Project:
 class Contributor:
 	def __init__(self, name, skills):
 		self.name = name
-		self.skills = skills
+		self.skills = skills # dictionary: key=skill, value=level
