@@ -13,7 +13,7 @@ class Project:
 				if not contributor.working:
 					if contributor.get_skill(role[0]) >= role[1]:
 						if contributor.get_skill(role[0]) == role[1]:
-							contributor.impoveSkill(role[0])
+							contributor.improveSkill(role[0])
 						self.contributors.append(contributor)
 						contributor.working = True
 						break
@@ -140,3 +140,5 @@ while True:
 		break
 
 write_submission(done, "a_submission.txt")
+print(f"{day=}")
+print(f"{score=}")
