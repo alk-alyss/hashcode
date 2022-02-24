@@ -50,9 +50,3 @@ def readInput(filename):
 			projects.append(Project(name, d, s, e, roles))
 	
 	return contributors, projects
-
-contributors, projects = readInput("a_an_example.in.txt")
-for c in contributors:
-	print(c)
-for p in projects:
-	print(p)
