@@ -1,6 +1,3 @@
-from multiprocessing.dummy import current_process
-
-
 class Project:
     def __init__(self, name, duration, score, end, roles):
         self.name = name
@@ -85,6 +82,20 @@ def sortProjects(projects):
     newProjects = sorted(projects, key=lambda x: (x.score, x.end), reverse=True)
     return newProjects
 
+def assignContributors():
+	while True:
+		project = projects.pop()
+		if not project.getContributors():
+			break
+		working.append(project)
+
+def completeProject():
+	working = sorted(working, key=lambda x: x.duration-day)
+	currentProject = working.pop()
+	day += currentProject.duration-day
+	score += max(currentProject.score - (currentProject.end - currentProject.day), 0)
+	for c in currentProject.contributors:
+		c.working = False
 
 # Main code
 day = 0
@@ -96,15 +107,6 @@ contributors, projects = readInput(filename)
 projects = sortProjects(projects)
 working = []
 
-while True:
-    project = projects.pop()
-    if not project.getContributors():
-        break
-    working.append(project)
-
-working = sorted(working, key=lambda x: x.duration)
-currentProject = working.pop()
-day += currentProject.duration
-score += currentProject.score
-for c in currentProject.contributors:
-	c.working = False
+while(True):
+	assignContributors()
+	completeProject()
