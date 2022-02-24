@@ -1,14 +1,15 @@
 class Project:
 	def __init__(self, name, duration, score, end, roles):
 		self.name = name
-		self.duration = duration
-		self.score = score
-		self.end = end
+		self.duration = int(duration)
+		self.score = int(score)
+		self.end = int(end)
 		self.roles = roles
 		self.contributors = []
 
 	def __str__(self):
-		return str(self.name)+" "+str(self.duration)+" "+str(self.score)+" "+str(self.end)+" "+str(self.roles)
+		# return str(self.name)+" "+str(self.duration)+" "+str(self.score)+" "+str(self.end)+" "+str(self.roles)
+		return "Score: " + str(self.score) + " End: " + str(self.end)
 
 class Contributor:
 	def __init__(self, name, skills):
@@ -50,3 +51,17 @@ def readInput(filename):
 			projects.append(Project(name, d, s, e, roles))
 	
 	return contributors, projects
+
+def sortProjects(projects):
+	newProjects = sorted(projects, key=lambda x: (x.score, x.end),  reverse=True)
+	return newProjects
+
+filename = "a_an_example.in.txt"
+# filename = "b_better_start_small.in.txt"
+contributors, projects = readInput(filename)
+for p in projects:
+	print(p)
+projects = sortProjects(projects)
+print('=======================')
+for p in projects:
+	print(p)
