@@ -38,6 +38,19 @@ class Contributor:
     def __str__(self):
         return str(self.name) + " " + str(self.skills)
 
+    def check_project(self, project: Project) -> bool:
+        for i in project.roles.keys():
+            if i in self.skills.keys():
+                if self.skills[i] >= project.roles[i]:
+                    return i
+        return False
+
+    def improveSkill(self, skill):
+        if skill in self.skills.keys():
+            self.skills[skill] += 1
+        else:
+            self.skills[skill] = 1
+
 
 def readInput(filename):
     contributors = []
@@ -49,14 +62,16 @@ def readInput(filename):
             skills = {}
             for y in range(int(n)):
                 skill, level = f.readline().split()
-                skills.update({skill: level})
+                skills[skill] = level
+
+            contributors.append(Contributor(name, skills))
 
         for x in range(int(p)):
             name, d, s, e, r = f.readline().split()
-            roles = {}
+            roles = []
             for y in range(int(r)):
                 role, level = f.readline().split()
-                roles.update({role: level})
+                roles.append((role, level))
 
             projects.append(Project(name, d, s, e, roles))
 
@@ -68,12 +83,17 @@ def sortProjects(projects):
     return newProjects
 
 
+# Main code
+day = 0
+
 filename = "a_an_example.in.txt"
 # filename = "b_better_start_small.in.txt"
 contributors, projects = readInput(filename)
-for p in projects:
-    print(p)
 projects = sortProjects(projects)
-print("=======================")
-for p in projects:
-    print(p)
+working = []
+
+while True:
+    project = projects.pop()
+    if not project.getContributors():
+        break
+    working.append(project)
