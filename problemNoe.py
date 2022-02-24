@@ -62,7 +62,7 @@ def readInput(filename):
             skills = {}
             for y in range(int(n)):
                 skill, level = f.readline().split()
-                skills[skill] = level
+                skills[skill] = int(level)
 
             contributors.append(Contributor(name, skills))
 
@@ -71,7 +71,7 @@ def readInput(filename):
             roles = []
             for y in range(int(r)):
                 role, level = f.readline().split()
-                roles.append((role, level))
+                roles.append((role, int(level)))
 
             projects.append(Project(name, d, s, e, roles))
 
@@ -82,20 +82,27 @@ def sortProjects(projects):
     newProjects = sorted(projects, key=lambda x: (x.score, x.end), reverse=True)
     return newProjects
 
-def assignContributors():
+def assignContributors(projects):
+	working = []
 	while True:
 		project = projects.pop()
-		if not project.getContributors():
+		if not project.getContributors(contributors):
 			break
 		working.append(project)
+	
+	return working
 
-def completeProject():
+def completeProject(working):
+	global day, score
+
 	working = sorted(working, key=lambda x: x.duration-day)
 	currentProject = working.pop()
 	day += currentProject.duration-day
 	score += max(currentProject.score - (currentProject.end - currentProject.day), 0)
 	for c in currentProject.contributors:
 		c.working = False
+	
+	return currentProject
 
 # Main code
 day = 0
@@ -104,9 +111,14 @@ score = 0
 filename = "a_an_example.in.txt"
 # filename = "b_better_start_small.in.txt"
 contributors, projects = readInput(filename)
+numberOfProjects = len(projects)
 projects = sortProjects(projects)
-working = []
+done = []
 
 while(True):
-	assignContributors()
-	completeProject()
+	working = assignContributors(projects)
+	if working == []:
+		break
+	done.append(completeProject(working))
+	if len(done) == numberOfProjects:
+		break
