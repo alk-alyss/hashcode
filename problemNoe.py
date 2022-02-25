@@ -7,11 +7,11 @@ class Project:
 		self.roles = roles
 		self.contributors = []
 
-	def getContributors(self, contributors):
+	def findContributors(self, contributors):
 		for role in self.roles:
 			for contributor in contributors:
 				if not contributor.working:
-					if contributor.get_skill(role[0]) >= role[1]:
+					if contributor.getSkill(role[0]) >= role[1]:
 						self.contributors.append(contributor)
 						contributor.working = True
 						break
@@ -33,7 +33,7 @@ class Contributor:
 		self.skills = skills  # dictionary: key=skill, value=level
 		self.working = False
 
-	def get_skill(self, skill) -> bool:
+	def getSkill(self, skill) -> bool:
 		if skill in self.skills.keys():
 			return self.skills[skill]
 		return 0
@@ -41,7 +41,7 @@ class Contributor:
 	def __str__(self):
 		return str(self.name) + " " + str(self.skills)
 
-	def check_project(self, project: Project) -> bool:
+	def checkProject(self, project: Project) -> bool:
 		for i in project.roles.keys():
 			if i in self.skills.keys():
 				if self.skills[i] >= project.roles[i]:
@@ -90,7 +90,7 @@ def assignContributors(projects):
 	working = []
 	projectsCopy = projects.copy()
 	for project in projects:
-		if not project.getContributors(contributors):
+		if not project.findContributors(contributors):
 			continue
 		working.append(project)
 		projectsCopy.remove(project)
@@ -98,7 +98,7 @@ def assignContributors(projects):
 	return working, projectsCopy
 
 
-def completeProject(working):
+def completeProjects(working):
 	global day, score
 
 	working = sorted(working, key=lambda x: x.duration)
@@ -122,7 +122,7 @@ def completeProject(working):
 	return done
 
 
-def write_submission(done, filename):
+def writeSubmission(done, filename):
 	with open(filename, "w") as file:
 		file.write(str(len(done)))
 		for project in done:
@@ -143,19 +143,20 @@ filename = "c_collaboration.in.txt"
 # filename = "d_dense_schedule.in.txt"
 # filename = "e_exceptional_skills.in.txt"
 # filename = "f_find_great_mentors.in.txt"
+
 contributors, projects = readInput(filename)
 numberOfProjects = len(projects)
-# projects = sortProjects(projects)
+projects = sortProjects(projects)
 done = []
 
 while True:
 	working, projects = assignContributors(projects)
 	if working == []:
 		break
-	done.extend(completeProject(working))
+	done.extend(completeProjects(working))
 	if len(done) == numberOfProjects:
 		break
 
-write_submission(done, filename[0]+"_submission.txt")
+writeSubmission(done, filename[0]+"_submission.txt")
 print(f"{day=}")
 print(f"{score=}")
