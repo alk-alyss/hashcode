@@ -102,24 +102,28 @@ def completeProjects(working):
 	global day, score
 
 	working = sorted(working, key=lambda x: x.duration)
-	done = [working.pop()]
+	done = [working.pop(0)]
 
 	day += done[0].duration
 	for project in working:
 		project.duration -= done[0].duration
 		if project.duration <= 0:
 			done.append(project)
+			working.remove(project)
 
 
 	for project in done:
 		for i, c in enumerate(project.contributors):
 			if c.skills[project.roles[i][0]] <= project.roles[i][1]:
 				c.improveSkill(project.roles[i][0])
-		score += max(project.score - (project.end - day), 0)
+
+		scorePenalty = day - project.end if day >= project.end else 0
+		score += max(project.score - scorePenalty, 0)
+
 		for c in project.contributors:
 			c.working = False
 
-	return done
+	return done, working
 
 
 def writeSubmission(done, filename):
@@ -138,8 +142,8 @@ day = 0
 score = 0
 
 # filename = "a_an_example.in.txt"
-# filename = "b_better_start_small.in.txt"
-filename = "c_collaboration.in.txt"
+filename = "b_better_start_small.in.txt"
+# filename = "c_collaboration.in.txt"
 # filename = "d_dense_schedule.in.txt"
 # filename = "e_exceptional_skills.in.txt"
 # filename = "f_find_great_mentors.in.txt"
@@ -148,15 +152,19 @@ contributors, projects = readInput(filename)
 numberOfProjects = len(projects)
 projects = sortProjects(projects)
 done = []
+working = []
 
 while True:
-	working, projects = assignContributors(projects)
+	newWorking, projects = assignContributors(projects)
+	working.extend(newWorking)
 	if working == []:
 		break
-	done.extend(completeProjects(working))
+	newDone, working = completeProjects(working)
+	done.extend(newDone)
 	if len(done) == numberOfProjects:
 		break
 
 writeSubmission(done, filename[0]+"_submission.txt")
 print(f"{day=}")
 print(f"{score=}")
+print(f"{len(done)=}")
