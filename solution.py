@@ -136,6 +136,15 @@ def writeSubmission(done, filename):
 				tmp += contributor.name + " "
 			file.write(tmp)
 
+def makeIndex(contributors : list):
+	roleindex = {}
+	for contributor in contributors:
+		for role in contributor.skills.keys():
+			if role in roleindex.keys():
+				roleindex[role].append(contributor)
+			else:
+				roleindex[role] = [contributor]
+	return roleindex
 
 # Main code
 day = 0
@@ -153,6 +162,7 @@ numberOfProjects = len(projects)
 projects = sortProjects(projects)
 done = []
 working = []
+roleindex = makeIndex(contributors)
 
 while True:
 	newWorking, projects = assignContributors(projects)
