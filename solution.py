@@ -22,6 +22,9 @@ class Project:
                 return False
         return True
 
+    def findMento(self, ):
+        pass
+
     def __str__(self):
         # return str(self.name)+" "+str(self.duration)+" "+str(self.score)+" "+str(self.end)+" "+str(self.roles)
         return "Score: " + str(self.score) + " End: " + str(self.end)
@@ -83,7 +86,7 @@ def readInput(filename):
 
 def sortProjects(projects):
     newProjects = sorted(projects, key=lambda x: (
-        x.end))
+        x.score, x.end), reverse=True)
     return newProjects
 
 
@@ -162,8 +165,8 @@ day = 0
 score = 0
 
 # filename = "a_an_example.in.txt"
-filename = "b_better_start_small.in.txt"
-# filename = "c_collaboration.in.txt"
+# filename = "b_better_start_small.in.txt"
+filename = "c_collaboration.in.txt"
 # filename = "d_dense_schedule.in.txt"
 # filename = "e_exceptional_skills.in.txt"
 # filename = "f_find_great_mentors.in.txt"
