@@ -82,7 +82,7 @@ def readInput(filename):
 
 
 def sortProjects(projects):
-	newProjects = sorted(projects, key=lambda x: (x.score, x.end), reverse=True)
+	newProjects = sorted(projects, key=lambda x: (x.end-x.duration, x.end, x.score, len(x.roles)))
 	return newProjects
 
 
@@ -142,8 +142,8 @@ day = 0
 score = 0
 
 # filename = "a_an_example.in.txt"
-filename = "b_better_start_small.in.txt"
-# filename = "c_collaboration.in.txt"
+# filename = "b_better_start_small.in.txt"
+filename = "c_collaboration.in.txt"
 # filename = "d_dense_schedule.in.txt"
 # filename = "e_exceptional_skills.in.txt"
 # filename = "f_find_great_mentors.in.txt"
@@ -163,6 +163,7 @@ while True:
 	done.extend(newDone)
 	if len(done) == numberOfProjects:
 		break
+	print(f"{len(projects)=}", f"{len(done)=}")
 
 writeSubmission(done, filename[0]+"_submission.txt")
 print(f"{day=}")
