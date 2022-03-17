@@ -121,8 +121,12 @@ def readInput(filename):
 
 
 def sortProjects(projects):
-	newProjects = sorted(projects, key=lambda x: (x.end-x.duration, x.end, x.score, len(x.roles)))
-	return newProjects
+    # newProjects = sorted(projects, key=lambda x: (x.end-x.duration, x.end, x.score, len(x.roles)))
+    # newProjects = sorted(projects, key=lambda x: (x.end, x.score), reverse=True) # score=112410
+    # newProjects = sorted(projects, key=lambda x: (x.score, x.end), reverse=True) # score=146850
+    # newProjects = sorted(projects, key=lambda x: (x.score+x.end), reverse=True) # score=157715
+    newProjects = sorted(projects, key=lambda x: (x.end/x.score), reverse=False)
+    return newProjects
 
 
 def assignContributors(projects, contributors_index):
@@ -147,7 +151,7 @@ def assignContributors(projects, contributors_index):
 
 def completeProjects(working):
     # This is horrible but nevermind
-    global day, score
+    global day, score, scoringProjects
     # Sort bases the least ammount of time to work
     # and the progress for that time
     working = sorted(working, key=lambda x: x.duration)
@@ -170,7 +174,11 @@ def completeProjects(working):
             if c.skills[project.roles[i][0]] <= project.roles[i][1]:
                 c.improveSkill(project.roles[i][0])
         # Calculate the score
-        scorePenalty = day - project.end if day >= project.end else 0
+        if day >= project.end:
+            scorePenalty = day - project.end
+        else:
+            scorePenalty = 0
+            scoringProjects += 1
         score += max(project.score - scorePenalty, 0)
         # Free up the working contributors
         for c in project.contributors:
@@ -220,6 +228,7 @@ def sort_index(contributors_index):
 # Main code
 day = 0
 score = 0
+scoringProjects = 0
 
 # filename = "a_an_example.in.txt"
 # filename = "b_better_start_small.in.txt"
@@ -261,6 +270,6 @@ while True:
 # Write the solution to a file
 writeSubmission(done, filename[0]+"_submission.txt")
 # Debugging
-print(f"{day=}")
 print(f"{score=}")
+print(f"{scoringProjects=}")
 print(f"{len(done)=}")
