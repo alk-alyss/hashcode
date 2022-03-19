@@ -275,32 +275,43 @@ Contributor.contributorIndex = makeIndex(Contributor.contributorList)
 Contributor.contributorIndex = sort_index(Contributor.contributorIndex)
 
 # Main loop to calculate our solution
-while True:
-	newWorking = assignContributors(projects)
-	# We need to extend working in the case there are some remaining
-	# projects to be done
-	working.extend(newWorking)
-	# if working is empty that means that we couldnt assign anymore
-	# contributors to a project so we end our while True loop
-	if working == []:
-		break
-	# take the working projects and forward time in order
-	# to free up some contributors
-	newDone, working = completeProjects(working)
-	done.extend(newDone)
-	# if the done list has as many projects as the
-	# numberOfProjects then we are done
-	if len(done) == numberOfProjects:
-		break
+try:
+	while True:
+		newWorking = assignContributors(projects)
+		# We need to extend working in the case there are some remaining
+		# projects to be done
+		working.extend(newWorking)
+		# if working is empty that means that we couldnt assign anymore
+		# contributors to a project so we end our while True loop
+		if working == []:
+			break
+		# take the working projects and forward time in order
+		# to free up some contributors
+		newDone, working = completeProjects(working)
+		done.extend(newDone)
+		# if the done list has as many projects as the
+		# numberOfProjects then we are done
+		if len(done) == numberOfProjects:
+			break
 
+		print(f"{len(done)=}")
+	# Write the solution to a file
+	writeSubmission(done, filename[0]+"_submission.txt")
+	# Debugging
+	print(f"{day=}")
+	print(f"{score=}")
+	print(f"{nonScoringProjects=}")
 	print(f"{len(done)=}")
+	print(f"{len(working)=}")
+
+except KeyboardInterrupt:
+	writeSubmission(done, filename[0]+"_submission.txt")
+	# Debugging
+	print("\n")
+	print(f"{day=}")
+	print(f"{score=}")
+	print(f"{nonScoringProjects=}")
+	print(f"{len(done)=}")
+	print(f"{len(working)=}")
 
 
-# Write the solution to a file
-writeSubmission(done, filename[0]+"_submission.txt")
-# Debugging
-print(f"{day=}")
-print(f"{score=}")
-print(f"{nonScoringProjects=}")
-print(f"{len(done)=}")
-print(f"{len(working)=}")
