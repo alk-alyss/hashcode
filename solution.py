@@ -130,13 +130,25 @@ def readInput(filename):
 # (x.score , x.end) reverse = True
 
 
-def sortProjects(projects):
+def sortProjects(projects,sorting):
+	match sorting:
+		case None:
+			return projects
+		case "c":
+			return sorted(projects, key=lambda x: (x.score, x.end), reverse=True) 
+		
+		case _:
+			return projects
+		
+				
+	# newProjects = projects
 	# newProjects = sorted(projects, key=lambda x: (x.end-x.duration, x.end, x.score, len(x.roles)))
 	# newProjects = sorted(projects, key=lambda x: (x.end, x.score), reverse=True) # score=112410
-	newProjects = sorted(projects, key=lambda x: (x.score, x.end), reverse=True) # score=146850
+	#newProjects = sorted(projects, key=lambda x: (x.score, x.end), reverse=True) # score=146850
 	# newProjects = sorted(projects, key=lambda x: (x.score+x.end), reverse=True) # score=157715
 	# newProjects = sorted(projects, key=lambda x: (x.end/x.score), reverse=False)
-	return newProjects
+	# newProjects = sorted(projects ,key=lambda x: (len(x.contributors), x.duration))
+	# return newProjects
 
 
 def assignContributors(projects):
@@ -249,7 +261,7 @@ parser.add_argument("--file","-f" , action="store" , help="choose the file to ru
 args = parser.parse_args()
 match args.file:
 	case "a":
-		filename = "a_an_example.in.txt"
+		filename = "a_an_example.in.txt"	
 	case "b":
 		filename = "b_better_start_small.in.txt"
 	case "c":
@@ -264,7 +276,7 @@ match args.file:
 		filename = "f_find_great_mentors.in.txt"
 # Get contributors and projects
 Contributor.contributorList, projects = readInput(filename)
-projects = sortProjects(projects)
+projects = sortProjects(projects,args.file)
 # Used for checking
 numberOfProjects = len(projects)
 done = []
