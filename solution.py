@@ -21,6 +21,7 @@ class Project:
 			mentee = self.findMentor(role[0], role[1])
 			if mentee != None:
 				self.contributors.append(mentee)
+				mentee.working = True
 				continue
 			for contributor in Contributor.contributorIndex[role[0]]:
 				if not contributor.working:
@@ -132,8 +133,8 @@ def readInput(filename):
 def sortProjects(projects):
 	# newProjects = sorted(projects, key=lambda x: (x.end-x.duration, x.end, x.score, len(x.roles)))
 	# newProjects = sorted(projects, key=lambda x: (x.end, x.score), reverse=True) # score=112410
-	# newProjects = sorted(projects, key=lambda x: (x.score, x.end), reverse=True) # score=146850
-	newProjects = sorted(projects, key=lambda x: (x.score+x.end), reverse=True) # score=157715
+	newProjects = sorted(projects, key=lambda x: (x.score, x.end), reverse=True) # score=146850
+	# newProjects = sorted(projects, key=lambda x: (x.score+x.end), reverse=True) # score=157715
 	# newProjects = sorted(projects, key=lambda x: (x.end/x.score), reverse=False)
 	return newProjects
 
@@ -291,6 +292,8 @@ while True:
 	# numberOfProjects then we are done
 	if len(done) == numberOfProjects:
 		break
+
+	print(f"{len(done)=}")
 
 
 # Write the solution to a file
