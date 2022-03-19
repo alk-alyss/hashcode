@@ -149,7 +149,7 @@ def assignContributors(projects, contributors_index):
 
 def completeProjects(working):
 	# This is horrible but nevermind
-	global day, score, scoringProjects
+	global day, score, nonScoringProjects
 	# Sort bases the least ammount of time to work
 	# and the progress for that time
 	working = sorted(working, key=lambda x: x.duration)
@@ -174,12 +174,10 @@ def completeProjects(working):
 			if c.skills[project.roles[i][0]] <= project.roles[i][1]:
 				c.improveSkill(project.roles[i][0])
 		# Calculate the score
-		if day >= project.end:
-			scorePenalty = day - project.end
-		else:
-			scorePenalty = 0
-			scoringProjects += 1
+		scorePenalty = day - project.end if day > project.end else 0
 		score += max(project.score - scorePenalty, 0)
+		if project.score - scorePenalty < 0:
+			nonScoringProjects += 1
 		# Free up the working contributors
 		for c in project.contributors:
 			c.working = False
@@ -228,7 +226,7 @@ def sort_index(contributors_index):
 # Main code
 day = 0
 score = 0
-scoringProjects = 0
+nonScoringProjects = 0
 
 # filename = "a_an_example.in.txt"
 # filename = "b_better_start_small.in.txt"
@@ -271,6 +269,7 @@ while True:
 # Write the solution to a file
 writeSubmission(done, filename[0]+"_submission.txt")
 # Debugging
+print(f"{day=}")
 print(f"{score=}")
-print(f"{scoringProjects=}")
+print(f"{nonScoringProjects=}")
 print(f"{len(done)=}")
