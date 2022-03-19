@@ -179,15 +179,15 @@ def completeProjects(working):
 	global day, score, nonScoringProjects
 	# Sort bases the least ammount of time to work
 	# and the progress for that time
-	working = sorted(working, key=lambda x: x.duration)
+	# working = sorted(working, key=lambda x: x.duration)
+	days = min(working, key=lambda x: x.duration).duration
+	day += days
 
-	done = [working.pop(0)]
-	done[0].done = True
-	day += done[0].duration
+	done = []
 	for project in working:
 		if project.done:
 			continue
-		project.duration -= done[0].duration
+		project.duration -= days 
 		if project.duration <= 0:
 			project.done = True
 			done.append(project)
