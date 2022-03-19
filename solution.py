@@ -18,7 +18,7 @@ class Project:
 		for role in self.roles:
 			for contributor in contributors_index[role[0]]:
 				if not contributor.working:
-					if contributor.getSkill(role[0]) >= role[1]:
+					if contributor.skills[role[0]] >= role[1]:
 						self.contributors.append(contributor)
 						contributor.working = True
 						break
@@ -57,13 +57,6 @@ class Contributor:
 		self.name = name
 		self.skills = skills  # dictionary: key=skill, value=level
 		self.working = False
-
-	# Return the level of a skill
-	# if skill not obtained then the level is 0
-	def getSkill(self, skill) -> bool:
-		if skill in self.skills.keys():
-			return self.skills[skill]
-		return 0
 
 	def __str__(self):
 		return str(self.name) + " " + str(self.skills)
@@ -239,10 +232,10 @@ scoringProjects = 0
 
 # filename = "a_an_example.in.txt"
 # filename = "b_better_start_small.in.txt"
-# filename = "c_collaboration.in.txt"
+filename = "c_collaboration.in.txt"
 # filename = "d_dense_schedule.in.txt"
 # filename = "e_exceptional_skills.in.txt"
-filename = "f_find_great_mentors.in.txt"
+#filename = "f_find_great_mentors.in.txt"
 
 # Get contributors and projects
 contributors, projects = readInput(filename)
@@ -274,7 +267,6 @@ while True:
 	if len(done) == numberOfProjects:
 		break
 
-	print(f"{len(done)=}")
 
 # Write the solution to a file
 writeSubmission(done, filename[0]+"_submission.txt")
