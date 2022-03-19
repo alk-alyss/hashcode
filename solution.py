@@ -148,7 +148,7 @@ def assignContributors(projects, contributors_index):
 def completeProjects(working):
     # This is horrible but nevermind
     global day, score
-    # Sort bases the least ammount of time to work
+    # Sort based the least ammount of time to work
     # and the progress for that time
     working = sorted(working, key=lambda x: x.duration)
 
