@@ -9,13 +9,16 @@ class Project:
 		self.working = False
 		self.done = False
 
-	def findContributors(self, contributors_index):
+	def findContributors(self, contributors_index, contributor_list):
 		# Takes a dictionary with contributors
 		# and tries to fill all the roles for the current project
 		# if we cant fill all the roles then it return False
 		# else it return True
 		# TO DO: make the use of the findMentor function
 		for role in self.roles:
+			mentee = self.findMentor(contributors_index, role[0], role[1], contributor_list)
+			if mentee != None:
+				self.contributors.append(mentee)
 			for contributor in contributors_index[role[0]]:
 				if not contributor.working:
 					if contributor.skills[role[0]] >= role[1]:
@@ -29,23 +32,25 @@ class Project:
 				return False
 		return True
 
-	def findMentor(self, cur_project, role_index: dict, cur_role: str, level: int, contributor_list: list):
+	def findMentor(self, role_index: dict, cur_role: str, level: int, contributor_list: list):
 		# Take the contributor assigned in the current project
-		for contributor in cur_project.contributors:
+		for contributor in self.contributors:
 			# when a contributor inside the projects is assigned who knows the role
 			# at an adequate level then find a mentee
 			# if the required level for the role is 1
 			# then anyone can be assigned to the project
 			# return false if not mentee or mentor is found
 			if cur_role in contributor.skills.keys() and contributor[cur_role] >= level:
+				if level == 1:
+					for mentee in contributor_list:
+						if cur_role in mentee.skills.keys():
+							continue
+						if not mentee.working:
+							return mentee
 				for mentee in role_index[cur_role]:
 					if mentee[cur_role] == level - 1 and not mentee.working:
 						return mentee
-					if level == 1:
-						for mentee in contributor_list:
-							if not mentee.working:
-								return mentee
-		return False
+		return None
 
 	def __str__(self):
 		# return str(self.name)+" "+str(self.duration)+" "+str(self.score)+" "+str(self.end)+" "+str(self.roles)
