@@ -9,17 +9,18 @@ class Project:
 		self.working = False
 		self.done = False
 
-	def findContributors(self, contributors_index, contributor_list):
+	def findContributors(self):
 		# Takes a dictionary with contributors
 		# and tries to fill all the roles for the current project
 		# if we cant fill all the roles then it return False
 		# else it return True
 		# TO DO: make the use of the findMentor function
 		for role in self.roles:
-			mentee = self.findMentor(contributors_index, role[0], role[1], contributor_list)
+			mentee = self.findMentor(role[0], role[1])
 			if mentee != None:
 				self.contributors.append(mentee)
-			for contributor in contributors_index[role[0]]:
+				continue
+			for contributor in Contributor.contributorIndex[role[0]]:
 				if not contributor.working:
 					if contributor.skills[role[0]] >= role[1]:
 						self.contributors.append(contributor)
@@ -32,7 +33,7 @@ class Project:
 				return False
 		return True
 
-	def findMentor(self, role_index: dict, cur_role: str, level: int, contributor_list: list):
+	def findMentor(self, cur_role: str, level: int):
 		# Take the contributor assigned in the current project
 		for contributor in self.contributors:
 			# when a contributor inside the projects is assigned who knows the role
@@ -40,15 +41,15 @@ class Project:
 			# if the required level for the role is 1
 			# then anyone can be assigned to the project
 			# return false if not mentee or mentor is found
-			if cur_role in contributor.skills.keys() and contributor[cur_role] >= level:
+			if cur_role in contributor.skills.keys() and contributor.skills[cur_role] >= level:
 				if level == 1:
-					for mentee in contributor_list:
+					for mentee in Contributor.contributorList:
 						if cur_role in mentee.skills.keys():
 							continue
 						if not mentee.working:
 							return mentee
-				for mentee in role_index[cur_role]:
-					if mentee[cur_role] == level - 1 and not mentee.working:
+				for mentee in Contributor.contributorIndex[cur_role]:
+					if not mentee.working and mentee.skills[cur_role] == level - 1:
 						return mentee
 		return None
 
@@ -58,6 +59,9 @@ class Project:
 
 
 class Contributor:
+	contributorList = []
+	contributorIndex = {}
+
 	def __init__(self, name, skills):
 		self.name = name
 		self.skills = skills  # dictionary: key=skill, value=level
@@ -78,11 +82,14 @@ class Contributor:
 	# If the skill needs to be improved then we add one to it
 	# else we add the current skill to the skills dictionary and
 	# assign 1 to it
-	def improveSkill(self, skill):
-		if skill in self.skills.keys():
-			self.skills[skill] += 1
+	def improveSkill(self, skill:list):
+		if skill[0] in self.skills.keys():
+			if self.skills[skill[0]] <= skill[1]:
+				self.skills[skill[0]] += 1
+				return False
 		else:
-			self.skills[skill] = 1
+			self.skills[skill[0]] = 1
+			return True
 
 # Simple function to read all the projects
 # and contributors and add them to the corresponding
@@ -129,13 +136,13 @@ def sortProjects(projects):
 	return newProjects
 
 
-def assignContributors(projects, contributors_index):
+def assignContributors(projects):
 	working = []
 	# projectsCopy = projects.copy()
 	for project in projects:
 		if project.working:
 			continue
-		if not project.findContributors(contributors_index):
+		if not project.findContributors():
 			continue
 		project.working = True
 		working.append(project)
@@ -176,8 +183,8 @@ def completeProjects(working):
 		for i, c in enumerate(project.contributors):
 			# This probably works even if the contributor is a mentee
 			# not checked yet
-			if c.skills[project.roles[i][0]] <= project.roles[i][1]:
-				c.improveSkill(project.roles[i][0])
+			if c.improveSkill(project.roles[i]):
+				Contributor.contributorIndex[project.roles[i][0]].insert(0, c)
 		# Calculate the score
 		scorePenalty = day - project.end if day > project.end else 0
 		score += max(project.score - scorePenalty, 0)
@@ -241,19 +248,19 @@ filename = "c_collaboration.in.txt"
 #filename = "f_find_great_mentors.in.txt"
 
 # Get contributors and projects
-contributors, projects = readInput(filename)
+Contributor.contributorList, projects = readInput(filename)
 projects = sortProjects(projects)
 # Used for checking
 numberOfProjects = len(projects)
 done = []
 working = []
 # Make index
-roleindex = makeIndex(contributors)
-roleindex = sort_index(roleindex)
+Contributor.contributorIndex = makeIndex(Contributor.contributorList)
+Contributor.contributorIndex = sort_index(Contributor.contributorIndex)
 
 # Main loop to calculate our solution
 while True:
-	newWorking = assignContributors(projects, roleindex)
+	newWorking = assignContributors(projects)
 	# We need to extend working in the case there are some remaining
 	# projects to be done
 	working.extend(newWorking)
