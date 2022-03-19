@@ -178,9 +178,6 @@ def completeProjects(working):
 		project.duration -= done[0].duration
 		if project.duration <= 0:
 			done.append(project)
-			# Again this seems horrible
-			# probably it needs to be changed
-			# TO DO
 			project.done = True
 
 	for project in done:
@@ -296,16 +293,8 @@ try:
 			break
 
 		print(f"{len(done)=}")
-	# Write the solution to a file
-	writeSubmission(done, filename[0]+"_submission.txt")
-	# Debugging
-	print(f"{day=}")
-	print(f"{score=}")
-	print(f"{nonScoringProjects=}")
-	print(f"{len(done)=}")
-	print(f"{len(working)=}")
 
-except KeyboardInterrupt:
+finally:
 	writeSubmission(done, filename[0]+"_submission.txt")
 	# Debugging
 	print("\n")
