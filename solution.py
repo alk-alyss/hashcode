@@ -169,6 +169,7 @@ def completeProjects(working):
 	# and the progress for that time
 	working = sorted(working, key=lambda x: x.duration)
 
+	working[0].done = True
 	done = [working.pop(0)]
 	day += done[0].duration
 	for project in working:
