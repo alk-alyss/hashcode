@@ -7,6 +7,7 @@ class Project:
 		self.roles = roles
 		self.contributors = []
 		self.working = False
+		self.done = False
 
 	def findContributors(self, contributors_index):
 		# Takes a dictionary with contributors
@@ -163,13 +164,15 @@ def completeProjects(working):
 	done = [working.pop(0)]
 	day += done[0].duration
 	for project in working:
+		if project.done:
+			continue
 		project.duration -= done[0].duration
 		if project.duration <= 0:
 			done.append(project)
 			# Again this seems horrible
 			# probably it needs to be changed
 			# TO DO
-			working.remove(project)
+			project.done = True
 
 	for project in done:
 		for i, c in enumerate(project.contributors):
@@ -236,10 +239,10 @@ scoringProjects = 0
 
 # filename = "a_an_example.in.txt"
 # filename = "b_better_start_small.in.txt"
-filename = "c_collaboration.in.txt"
+# filename = "c_collaboration.in.txt"
 # filename = "d_dense_schedule.in.txt"
 # filename = "e_exceptional_skills.in.txt"
-# filename = "f_find_great_mentors.in.txt"
+filename = "f_find_great_mentors.in.txt"
 
 # Get contributors and projects
 contributors, projects = readInput(filename)
@@ -270,6 +273,8 @@ while True:
 	# numberOfProjects then we are done
 	if len(done) == numberOfProjects:
 		break
+
+	print(f"{len(done)=}")
 
 # Write the solution to a file
 writeSubmission(done, filename[0]+"_submission.txt")
