@@ -143,7 +143,7 @@ def assignContributors(projects):
 	working = []
 	# projectsCopy = projects.copy()
 	for project in projects:
-		if project.working:
+		if project.working or project.done:
 			continue
 		if not project.findContributors():
 			continue
@@ -177,8 +177,9 @@ def completeProjects(working):
 			continue
 		project.duration -= done[0].duration
 		if project.duration <= 0:
-			done.append(project)
 			project.done = True
+			done.append(project)
+			working.remove(project)
 
 	for project in done:
 		for i, c in enumerate(project.contributors):
@@ -260,7 +261,7 @@ match args.file:
 	case "f":
 		filename = "f_find_great_mentors.in.txt"
 	case _:
-		filename = "c_collaboration.in.txt"
+		filename = "f_find_great_mentors.in.txt"
 # Get contributors and projects
 Contributor.contributorList, projects = readInput(filename)
 projects = sortProjects(projects)
