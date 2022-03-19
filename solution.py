@@ -6,6 +6,7 @@ class Project:
         self.end = int(end)
         self.roles = roles
         self.contributors = []
+        self.working = False
 
     def findContributors(self, contributors_index):
         # Takes a dictionary with contributors
@@ -124,17 +125,20 @@ def sortProjects(projects):
     # newProjects = sorted(projects, key=lambda x: (x.end-x.duration, x.end, x.score, len(x.roles)))
     # newProjects = sorted(projects, key=lambda x: (x.end, x.score), reverse=True) # score=112410
     # newProjects = sorted(projects, key=lambda x: (x.score, x.end), reverse=True) # score=146850
-    # newProjects = sorted(projects, key=lambda x: (x.score+x.end), reverse=True) # score=157715
-    newProjects = sorted(projects, key=lambda x: (x.end/x.score), reverse=False)
+    newProjects = sorted(projects, key=lambda x: (x.score+x.end), reverse=True) # score=157715
+    # newProjects = sorted(projects, key=lambda x: (x.end/x.score), reverse=False)
     return newProjects
 
 
 def assignContributors(projects, contributors_index):
     working = []
-    projectsCopy = projects.copy()
+    # projectsCopy = projects.copy()
     for project in projects:
+        if project.working:
+            continue
         if not project.findContributors(contributors_index):
             continue
+        project.working = True
         working.append(project)
         # Probably this method takes a lot of time
         # TO DO: find a better way to do this
@@ -142,9 +146,9 @@ def assignContributors(projects, contributors_index):
         # so we can mark them that are done
         # so we dont need to make a copy of the projects list
         # and then remove it
-        projectsCopy.remove(project)
+        # projectsCopy.remove(project)
 
-    return working, projectsCopy
+    return working
 
 # Function to progress time and free up the working contributors
 
@@ -250,7 +254,7 @@ roleindex = sort_index(roleindex)
 
 # Main loop to calculate our solution
 while True:
-    newWorking, projects = assignContributors(projects, roleindex)
+    newWorking = assignContributors(projects, roleindex)
     # We need to extend working in the case there are some remaining
     # projects to be done
     working.extend(newWorking)
