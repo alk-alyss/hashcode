@@ -1,3 +1,5 @@
+import argparse
+from ast import match_case
 class Project:
 	def __init__(self, name, duration, score, end, roles):
 		self.name = name
@@ -240,13 +242,26 @@ day = 0
 score = 0
 nonScoringProjects = 0
 
-# filename = "a_an_example.in.txt"
-# filename = "b_better_start_small.in.txt"
-filename = "c_collaboration.in.txt"
-# filename = "d_dense_schedule.in.txt"
-# filename = "e_exceptional_skills.in.txt"
-#filename = "f_find_great_mentors.in.txt"
 
+
+parser = argparse.ArgumentParser(description="Hashcode 2022")
+parser.add_argument("--file","-f" , action="store" , help="choose the file to run" , type = str)
+args = parser.parse_args()
+match args.file:
+	case "a":
+		filename = "a_an_example.in.txt"
+	case "b":
+		filename = "b_better_start_small.in.txt"
+	case "c":
+		filename = "c_collaboration.in.txt"
+	case "d":
+		filename = "d_dense_schedule.in.txt"
+	case "e":
+		filename = "e_exceptional_skills.in.txt"
+	case "f":
+		filename = "f_find_great_mentors.in.txt"
+	case _:
+		filename = "c_collaboration.in.txt"
 # Get contributors and projects
 Contributor.contributorList, projects = readInput(filename)
 projects = sortProjects(projects)
@@ -285,3 +300,4 @@ print(f"{day=}")
 print(f"{score=}")
 print(f"{nonScoringProjects=}")
 print(f"{len(done)=}")
+print(f"{len(working)=}")
