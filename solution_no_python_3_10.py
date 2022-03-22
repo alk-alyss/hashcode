@@ -385,5 +385,20 @@ finally:
 # len(done): 6064
 # len(working): 0
 
-# f file
+# f file stopped
 #
+# day: 64891
+# score: 337687
+# nonScoringProjects: 3027
+# len(done): 5245
+# len(working): 36
+
+# f stopped
+#
+
+
+
+# 2.743.706 without completed f
+# 3.081.393 with 5000 in f
+
+
