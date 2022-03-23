@@ -134,20 +134,13 @@ def readInput(filename):
 
 
 def sortProjects(projects, sorting):
-    match
-    sorting:
-    case
-    None:
-    return projects
-
-
-case
-"c":
-return sorted(projects, key=lambda x: (x.score, x.end), reverse=True)
-
-case
-_:
-return projects
+    match sorting:
+        case None:
+            return projects
+        case "c":
+            return sorted(projects, key=lambda x: (x.score, x.end), reverse=True)
+        case _:
+            return projects
 
 
 # newProjects = projects
@@ -276,29 +269,21 @@ nonScoringProjects = 0
 parser = argparse.ArgumentParser(description="Hashcode 2022")
 parser.add_argument("--file", "-f", action="store", help="choose the file to run", type=str)
 args = parser.parse_args()
-match
-args.file:
-case
-"a":
-filename = "a_an_example.in.txt"
-case
-"b":
-filename = "b_better_start_small.in.txt"
-case
-"c":
-filename = "c_collaboration.in.txt"
-case
-"d":
-filename = "d_dense_schedule.in.txt"
-case
-"e":
-filename = "e_exceptional_skills.in.txt"
-case
-"f":
-filename = "f_find_great_mentors.in.txt"
-case
-_:
-filename = "f_find_great_mentors.in.txt"
+match args.file:
+    case "a":
+        filename = "a_an_example.in.txt"
+    case    "b":
+        filename = "b_better_start_small.in.txt"
+    case    "c":
+        filename = "c_collaboration.in.txt"
+    case "d":
+        filename = "d_dense_schedule.in.txt"
+    case "e":
+        filename = "e_exceptional_skills.in.txt"
+    case "f":
+        filename = "f_find_great_mentors.in.txt"
+    case _:
+        filename = "f_find_great_mentors.in.txt"
 # Get contributors and projects
 Contributor.contributorList, projects = readInput(filename)
 projects = sortProjects(projects, args.file)
